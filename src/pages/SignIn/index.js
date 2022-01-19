@@ -34,9 +34,7 @@ export default function SignIn() {
       console.error(error.message);
       
       if (error.response) {
-        for (const message of error.response.data.message) {
-          toast(message);
-        }
+        toast(error.response.data.message);
       } else {
         toast("Não foi possível conectar ao servidor!");
       }
