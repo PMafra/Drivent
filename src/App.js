@@ -45,7 +45,7 @@ export default function App() {
       </EventInfoProvider>
     </>
   );
-}
+
 
 function ensureCountdownOngoing() {
   const { eventInfo } = useContext(EventInfoContext);
