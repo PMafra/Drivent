@@ -5,25 +5,35 @@ import useApi from "../../../hooks/useApi";
 export default function Hotel() {
   const { ticket } = useApi();
   const [ticketInfo, setTicketInfo] = useState("");
+  const [message, setMessage] = useState("");
+  const [authorized, setAuthorized] = useState(false);
 
-  function checkForPayment() {
+  function obtainPaymentInfo() {
     ticket.getTicketInformations().then((res) => {
-      // eslint-disable-next-line no-console
-      console.log(res.data[0]);
+      checkTicketInfo(res.data[0]);
       setTicketInfo(res.data[0]);
     });
   }
 
+  function checkTicketInfo(ticket) {
+    if (!ticket.isPaid) {
+      setMessage("Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem");
+      return;
+    };
+    if (ticket.modality.name !== "Presencial + Com Hotel") {
+      setMessage("Sua modalidade de ingresso não inclui hospedagem. Prossiga para a escolha de atividades");
+      return;
+    };
+    setAuthorized(true);
+  }
+
   useEffect(() => {
-    checkForPayment();
+    obtainPaymentInfo();
   }, []);
 
-  if (!ticketInfo.isPaid) {
+  if (!authorized) {
     return(
-      <Unauthorized 
-        message="Você precisa ter confirmado pagamento
-        antes de fazer a escolha de hospedagem"
-      />
+      <Unauthorized message={message} />
     );
   }
 
