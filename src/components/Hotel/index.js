@@ -2,9 +2,11 @@ import { Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
 import React, { useState } from "react";
 import styled from "styled-components";
+import Rooms from "../Rooms";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
+  console.log(rooms);
 
   function defineType(hotel) {
     let typesString = "";
@@ -74,6 +76,7 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
+      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)}/>}
     </>
   );
 }
