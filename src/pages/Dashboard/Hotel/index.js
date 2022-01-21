@@ -51,7 +51,7 @@ export default function Hotel() {
     };
   }, [authorized]);
 
-  if (!authorized || !hotels) {
+  if (!authorized || !hotels || !rooms) {
     return(
       <Unauthorized message={message} />
     );

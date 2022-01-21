@@ -5,7 +5,31 @@ import styled from "styled-components";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
-  console.log(chosenHotel);
+
+  function defineType(hotel) {
+    let roomTypes = [];
+  
+    rooms.forEach((room) => {
+      if (room.hotel.id === hotel.id) {
+        if (room.totalBeds === 1 && !roomTypes.some(e => e.type === "Single")) roomTypes.push({ type: "Single", id: 1 });
+        if (room.totalBeds === 2 && !roomTypes.some(e => e.type === "Double")) roomTypes.push({ type: "Double", id: 2 });
+        if (room.totalBeds === 3 && !roomTypes.some(e => e.type === "Triple")) roomTypes.push({ type: "Triple", id: 3 });
+      }
+    });
+
+    const sortedTypes = roomTypes.sort((a, b) => a.id - b.id);
+
+    if (sortedTypes.length === 1) {
+      return sortedTypes[0].type;
+    }
+    if (sortedTypes.length === 2) {
+      return `${sortedTypes[0].type} e ${sortedTypes[1].type}`;
+    }
+    if (sortedTypes.length === 3) {
+      return `${sortedTypes[0].type}, ${sortedTypes[1].type} e ${sortedTypes[2].type}`;
+    }
+  }
+
   return (
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
@@ -22,7 +46,7 @@ export default function Hotels({ rooms, hotels }) {
               <div className="name">{hotel.name}</div>
               <div className="infos">
                 <strong>Tipos de acomodação</strong>
-                Single
+                {defineType(hotel)}
               </div>
               <div className="infos last">
                 <strong>Vagas disponíveis</strong>
