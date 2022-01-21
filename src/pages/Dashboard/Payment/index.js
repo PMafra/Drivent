@@ -19,7 +19,7 @@ export default function Payment() {
       {!subscription ? (
         <Unauthorized
           message="Você precisa completar sua inscrição antes
-  de prosseguir pra escolha de ingresso"
+          de prosseguir pra escolha de ingresso"
         />
       ) : (
         <Tickets />
