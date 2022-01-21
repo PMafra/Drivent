@@ -30,6 +30,18 @@ export default function Hotels({ rooms, hotels }) {
     }
   }
 
+  function calculateEmptyBeds(hotel) {
+    let totalEmptyBeds = 0;
+  
+    rooms.forEach((room) => {
+      if (room.hotel.id === hotel.id) {
+        totalEmptyBeds += room.totalBeds - room.occupiedBeds;
+      }
+    });
+
+    return totalEmptyBeds;
+  }
+
   return (
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
@@ -50,7 +62,7 @@ export default function Hotels({ rooms, hotels }) {
               </div>
               <div className="infos last">
                 <strong>Vagas disponíveis</strong>
-                103
+                {calculateEmptyBeds(hotel)}
               </div>
             </HotelInfo>
           </Option>
@@ -84,7 +96,7 @@ const Option = styled(Button)`
   border: none !important;
   border-radius: 10px !important;
   text-transform: none !important;
-  background-color: ${(props) => (props.chosen ? "#FFEED2 !important" : "#F1F1F1 !important")};
+  background-color: ${({ chosen }) => (chosen ? "#FFEED2 !important" : "#F1F1F1 !important")};
   span {
     display: flex;
     flex-direction: column;
@@ -96,6 +108,11 @@ const Option = styled(Button)`
       object-fit: cover;
       border-radius: 5px;
       margin-top: 10px;
+  }
+  @media(max-width: 670px) {
+    img {
+      height: 70px;
+    }
   }
 `;
 
