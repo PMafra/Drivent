@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export default function TicketDetails({ name, price }) {
-  const formatedPrice = (price/100).toFixed(2);
+  const formatedPrice = price? (price/100).toFixed(2) : 0.0;
   const priceString = `R$ ${formatedPrice.toString().replace(".", ",")}`;
 
   return (

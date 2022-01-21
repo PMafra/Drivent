@@ -1,24 +1,41 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Typography from "@material-ui/core/Typography";
 
+import useApi from "../../hooks/useApi";
+
 import TicketDetails from "./TicketDetails";
 
-// MOCKED DATA FROM SERVICES
-const mockedTicket = {
-  id: 3, 
-  name: "Presencial + Com Hotel",
-  price: 60000
-};
-
 export default function DetailsAndPayment() {
+  const { ticket } = useApi();
+  const [data, setData] = useState({
+    id: "",
+    name: "Carregando...",
+    price: "",
+  });
+
+  useEffect(() => {
+    ticket.getTicketInformations().then(response => {
+      if (response.status !== 200) {
+        return;
+      }
+
+      setData({
+        id: response.data[0].id,
+        name: response.data[0].modality.name,
+        price: response.data[0].modality.price
+      });
+    });
+  }, []);
+
   return (
     <>
       <Title variant="h4">Ingresso e pagamento</Title>
       <Subtitle variant="h6">Ingresso escolhido</Subtitle>
       <TicketDetails 
-        id={mockedTicket.id}
-        name={mockedTicket.name} 
-        price={mockedTicket.price}
+        id={data.id}
+        name={data.name} 
+        price={data.price}
       />
     </>
   );
