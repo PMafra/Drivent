@@ -3,7 +3,7 @@ import Unauthorized from "../../../components/shared/Unauthorized";
 import useApi from "../../../hooks/useApi";
 
 export default function Hotel() {
-  const { ticket } = useApi();
+  const { ticket, hotel, room } = useApi();
   const [ticketInfo, setTicketInfo] = useState("");
   const [message, setMessage] = useState("");
   const [authorized, setAuthorized] = useState(false);
@@ -27,9 +27,30 @@ export default function Hotel() {
     setAuthorized(true);
   }
 
+  function obtainHotelsInfo() {
+    hotel.getHotelsInformations().then((res) => {
+      // eslint-disable-next-line no-console
+      console.log(res.data);
+    });
+  }
+
+  function obtainRoomsInfo() {
+    room.getRoomsInformations().then((res) => {
+      // eslint-disable-next-line no-console
+      console.log(res.data);
+    });
+  }
+
   useEffect(() => {
     obtainPaymentInfo();
   }, []);
+
+  useEffect(() => {
+    if (authorized) {
+      obtainHotelsInfo();
+      obtainRoomsInfo();
+    };
+  }, [authorized]);
 
   if (!authorized) {
     return(
