@@ -7,27 +7,33 @@ export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
 
   function defineType(hotel) {
-    let roomTypes = [];
+    let typesString = "";
+    let hashtableTypes = {
+      Single: false,
+      Double: false,
+      Triple: false,
+    };
   
     rooms.forEach((room) => {
       if (room.hotel.id === hotel.id) {
-        if (room.totalBeds === 1 && !roomTypes.some(e => e.type === "Single")) roomTypes.push({ type: "Single", id: 1 });
-        if (room.totalBeds === 2 && !roomTypes.some(e => e.type === "Double")) roomTypes.push({ type: "Double", id: 2 });
-        if (room.totalBeds === 3 && !roomTypes.some(e => e.type === "Triple")) roomTypes.push({ type: "Triple", id: 3 });
+        if (room.totalBeds === 1) hashtableTypes["Single"] = true;
+        if (room.totalBeds === 2) hashtableTypes["Double"] = true;
+        if (room.totalBeds === 3) hashtableTypes["Triple"] = true;
       }
     });
 
-    const sortedTypes = roomTypes.sort((a, b) => a.id - b.id);
+    for (const type in hashtableTypes) {
+      if (type === Object.keys(hashtableTypes)[Object.keys(hashtableTypes).length-1]) {
+        typesString += " e ";
+      } else {
+        if (typesString) typesString += ", ";
+      }
+      if (hashtableTypes[type]) {
+        typesString += String(type);
+      }
+    }
 
-    if (sortedTypes.length === 1) {
-      return sortedTypes[0].type;
-    }
-    if (sortedTypes.length === 2) {
-      return `${sortedTypes[0].type} e ${sortedTypes[1].type}`;
-    }
-    if (sortedTypes.length === 3) {
-      return `${sortedTypes[0].type}, ${sortedTypes[1].type} e ${sortedTypes[2].type}`;
-    }
+    return typesString;
   }
 
   function calculateEmptyBeds(hotel) {
