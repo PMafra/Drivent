@@ -6,7 +6,7 @@ import Rooms from "../Rooms";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
-  console.log(rooms);
+  const [chosenRoom, setChosenRoom] = useState("");
 
   function defineType(hotel) {
     let typesString = "";
@@ -76,7 +76,8 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
-      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)}/>}
+      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
+      {chosenRoom&&<SendButton>Reservar Quarto</SendButton>}
     </>
   );
 }
@@ -139,4 +140,16 @@ const SubTitle = styled(Typography)`
 
 const StyleTypography = styled(Typography)`
   margin-bottom: 35px !important;
+`;
+
+const SendButton = styled.button`
+  margin-top: 46px;
+  width: 182px;
+  height: 37px;
+  background: #E0E0E0;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
 `;
