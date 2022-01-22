@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { Button } from "@material-ui/core";
 
-export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
+export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad, oldRoomId }) {
   rooms.forEach(room => {
     room.emptyBedsArray = [];
     room.occupiedBedsArray = [];
@@ -11,6 +11,10 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
     }
     for(let i=0; i<room.occupiedBeds; i++) {
       room.occupiedBedsArray.push(1);
+    }
+    if(room.id === oldRoomId) {
+      room.emptyBedsArray.push(1);
+      room.occupiedBedsArray.pop();
     }
   });
 
@@ -23,7 +27,7 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
       <Header>Ótima pedida! Agora escolha seu quarto:</Header>
       <RoomsContainer>
         {rooms.map(room => 
-          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds ? 1: 0} chosen={room.id === chosenRoom.id ? 1: 0}>
+          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBedsArray.length ? 1: 0} chosen={room.id === chosenRoom.id ? 1: 0}>
             <RoomName>{room.name}</RoomName>
             <Beds>
               {room.emptyBedsArray.map((bed, index) => {

@@ -11,7 +11,7 @@ import ChosenHotel from "./ChosenHotel";
 import Load from "../shared/Load";
 import Loader from "react-loader-spinner";
 
-export default function Hotels({ rooms, hotels }) {
+export default function Hotels({ rooms, hotels, obtainRoomsInfo }) {
   const [chosenHotel, setChosenHotel] = useState("");
   const [chosenRoom, setChosenRoom] = useState("");
   const { userData } = useContext(UserContext);
@@ -27,15 +27,17 @@ export default function Hotels({ rooms, hotels }) {
 
   function getTicketInfo() {
     ticket.getTicketInformations().then(res => {
+      setTicketInfo(res.data[0]);
       if(res.data[0].roomId) {
-        setTicketInfo(res.data[0]);
         setChosenHotel(res.data[0].room.hotel);
         setChosenRoom(res.data[0].room);
         setHasARoom(true);
       }
+      obtainRoomsInfo();
       setMajorLoad(false);
     }).catch(err => {
       toast("Houve um erro ao verificar se seu ticket possui um quarto.");
+      setMajorLoad(false);
     });
   }
 
@@ -132,7 +134,7 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
-      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} minorLoad={minorLoad}/>}
+      {chosenHotel&&<Rooms oldRoomId={ticketInfo.roomId} rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} minorLoad={minorLoad}/>}
       {chosenRoom&&<SendButton onClick={postRoomHandler} disabled={minorLoad}>{minorLoad? <Loader type="ThreeDots" color="#FFFFFF" height={13} /> :"RESERVAR QUARTO"}</SendButton>}
     </>
   );
