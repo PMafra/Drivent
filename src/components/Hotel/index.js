@@ -7,13 +7,17 @@ import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useApi";
+import ChosenHotel from "./ChosenHotel";
+import Load from "../shared/Load";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
   const [chosenRoom, setChosenRoom] = useState("");
   const { userData } = useContext(UserContext);
   const { ticket } = useApi();
+  const [ticketInfo, setTicketInfo] = useState();
   const [hasARoom, setHasARoom] = useState(false);
+  const [majorLoad, setMajorLoad] = useState(true);
 
   useEffect(() => {
     getTicketInfo();
@@ -21,8 +25,11 @@ export default function Hotels({ rooms, hotels }) {
 
   function getTicketInfo() {
     ticket.getTicketInformations().then(res => {
+      console.log(res.data[0]);
       if(res.data[0].roomId) {
         setHasARoom(true);
+        setTicketInfo(res.data[0]);
+        setMajorLoad(false);
       }
     }).catch(err => {
       toast("Houve um erro ao verificar se seu ticket possui um quarto.");
@@ -83,13 +90,12 @@ export default function Hotels({ rooms, hotels }) {
     return totalEmptyBeds;
   }
 
+  if(majorLoad) {
+    return <Load />;
+  }
+
   if (hasARoom) {
-    return (
-      <>
-        <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
-        <SubTitle>Você já escolheu seu quarto: (à implementar)</SubTitle>
-      </>
-    );
+    return <ChosenHotel ticketInfo={ticketInfo} hasARoom={hasARoom} />;
   }
 
   return (
