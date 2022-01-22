@@ -16,12 +16,18 @@ export default function Hotels({ rooms, hotels }) {
   const [hasARoom, setHasARoom] = useState(false);
 
   useEffect(() => {
+    getTicketInfo();
+  }, []);
+
+  function getTicketInfo() {
     ticket.getTicketInformations().then(res => {
-      setHasARoom(true);
+      if(res.data[0].roomId) {
+        setHasARoom(true);
+      }
     }).catch(err => {
       toast("Houve um erro ao verificar se seu ticket possui um quarto.");
     });
-  }, []);
+  }
 
   function postRoomHandler() {
     const body = {
@@ -29,6 +35,7 @@ export default function Hotels({ rooms, hotels }) {
     };
     ticket.updateTicketRoom(body, userData.user.id).then(res => {
       toast("Quarto escolhido com sucesso!");
+      getTicketInfo();
     }).catch(err => {
       toast("Houve um erro ao escolher o quarto.");
     });
