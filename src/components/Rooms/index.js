@@ -23,7 +23,7 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
       <Header>Ótima pedida! Agora escolha seu quarto:</Header>
       <RoomsContainer>
         {rooms.map(room => 
-          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds} chosen={room.id === chosenRoom.id}>
+          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds ? 1: 0} chosen={room.id === chosenRoom.id ? 1: 0}>
             <RoomName>{room.name}</RoomName>
             <Beds>
               {room.emptyBedsArray.map((bed, index) => {
@@ -33,7 +33,7 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
                 }
                 return (<BsPerson key={index}/>);
               })}
-              {room.id === chosenRoom.id ? <ChosenBed chosen /> : ""}
+              {room.id === chosenRoom.id ? <ChosenBed chosen={1} /> : ""}
               {room.occupiedBedsArray.map((bed, index) => <BsPersonFill key={index}/>)}
             </Beds>
           </Room>
