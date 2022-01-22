@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
-import { useState } from "react";
+import { Button } from "@material-ui/core";
 
 export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
   rooms.forEach(room => {
@@ -57,21 +57,21 @@ const RoomsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const Room = styled.div`
+const Room = styled(Button)`
   width: 190px;
   height: 45px;
-  border: 1px solid #CECECE;
-  background: ${props => props.full ? "#E9E9E9" : props.chosen ? "#FFEED2" : "inherit"};
+  border: 1px solid #CECECE !important;
+  background: ${props => props.full ? "#E9E9E9" : props.chosen ? "#FFEED2" : "inherit"} !important;
   box-sizing: border-box;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px 0 12px;
-  cursor: ${props => props.full ? "default" : "pointer"};
-  pointer-events: ${props => props.full ? "none" : "initial"};
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 12px 0 12px !important;
+  cursor: ${props => props.full ? "default" : "pointer"} !important;
+  pointer-events: ${props => props.full ? "none" : "initial"} !important;
   p {
-    font-weight: bold;
+    font-weight: bold !important;
   }
 `;
 
