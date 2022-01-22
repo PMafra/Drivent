@@ -1,6 +1,6 @@
 import { Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Rooms from "../Rooms";
 import { useContext } from "react";
@@ -13,6 +13,15 @@ export default function Hotels({ rooms, hotels }) {
   const [chosenRoom, setChosenRoom] = useState("");
   const { userData } = useContext(UserContext);
   const { ticket } = useApi();
+  const [hasARoom, setHasARoom] = useState(false);
+
+  useEffect(() => {
+    ticket.getTicketInformations().then(res => {
+      setHasARoom(true);
+    }).catch(err => {
+      toast("Houve um erro ao verificar se seu ticket possui um quarto.");
+    });
+  }, []);
 
   function postRoomHandler() {
     const body = {
@@ -65,6 +74,15 @@ export default function Hotels({ rooms, hotels }) {
     });
 
     return totalEmptyBeds;
+  }
+
+  if (hasARoom) {
+    return (
+      <>
+        <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
+        <SubTitle>Você já escolheu seu quarto: (à implementar)</SubTitle>
+      </>
+    );
   }
 
   return (
