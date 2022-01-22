@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import Unauthorized from "../../../components/shared/Unauthorized";
 import useApi from "../../../hooks/useApi";
 import Hotels from "../../../components/Hotel/index";
+import { toast } from "react-toastify";
 
 export default function Hotel() {
   const { ticket, hotel, room } = useApi();
-  const [message, setMessage] = useState("Houve um problema ao buscar os hoteis");
+  const [message, setMessage] = useState("");
   const [authorized, setAuthorized] = useState(false);
   const [hotels, setHotels] = useState("");
   const [rooms, setRooms] = useState("");
@@ -13,11 +14,13 @@ export default function Hotel() {
   function obtainPaymentInfo() {
     ticket.getTicketInformations().then((res) => {
       checkTicketInfo(res.data[0]);
+    }).catch((err) => {
+      toast("Houve um problema ao buscar os hoteis");
     });
   }
 
   function checkTicketInfo(userTicket) {
-    if (!userTicket.isPaid) {
+    if (!userTicket?.isPaid) {
       setMessage("Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem");
       return;
     };
