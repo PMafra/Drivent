@@ -1,7 +1,7 @@
 import { Button, Typography } from "@material-ui/core";
 import styled from "styled-components";
 
-export default function ChosenHotel({ ticketInfo, hasARoom }) {
+export default function ChosenHotel({ ticketInfo, setHasARoom }) {
   const { hotel } = ticketInfo.room;
   return (
     <Wrapper>
@@ -22,7 +22,7 @@ export default function ChosenHotel({ ticketInfo, hasARoom }) {
         </HotelInfo>
       </Option>
       <div></div>
-      <SendButton>TROCAR DE QUARTO</SendButton>
+      <SendButton onClick={() => setHasARoom(false)}>TROCAR DE QUARTO</SendButton>
     </Wrapper>
   );
 }

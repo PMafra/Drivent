@@ -94,7 +94,7 @@ export default function Hotels({ rooms, hotels }) {
   }
 
   if (hasARoom) {
-    return <ChosenHotel ticketInfo={ticketInfo} hasARoom={hasARoom} />;
+    return <ChosenHotel ticketInfo={ticketInfo} setHasARoom={setHasARoom} />;
   }
 
   return (
