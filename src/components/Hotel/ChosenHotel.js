@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 export default function ChosenHotel({ ticketInfo, setHasARoom }) {
   const { hotel } = ticketInfo.room;
+  const { room } = ticketInfo;
   return (
     <Wrapper>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
@@ -13,11 +14,11 @@ export default function ChosenHotel({ ticketInfo, setHasARoom }) {
           <div className="name">{hotel.name}</div>
           <div className="infos">
             <strong>Quarto reservado</strong>
-            {`${ticketInfo.room.name} (${ticketInfo.room.totalBeds === 1 ? "Single" : ticketInfo.room.totalBeds === 2 ? "Double" : "Triple"})`}
+            {`${room.name} (${room.totalBeds === 1 ? "Single" : room.totalBeds === 2 ? "Double" : "Triple"})`}
           </div>
           <div className="infos last">
             <strong>Pessoas no seu quarto</strong>
-            Você e mais 1
+            {room.occupiedBeds === 1 ? "Só você" : room.occupiedBeds === 2 ? "Você e mais 1" : "Você e mais 2"}
           </div>
         </HotelInfo>
       </Option>

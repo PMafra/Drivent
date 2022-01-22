@@ -61,7 +61,7 @@ const Room = styled(Button)`
   width: 190px;
   height: 45px;
   border: 1px solid #CECECE !important;
-  background: ${props => props.full ? "#E9E9E9" : props.chosen ? "#FFEED2" : "inherit"} !important;
+  background: ${props => props.chosen ? "#FFEED2" : props.full ? "#E9E9E9" : "inherit"} !important;
   box-sizing: border-box;
   border-radius: 10px !important;
   display: flex !important;
@@ -69,7 +69,7 @@ const Room = styled(Button)`
   justify-content: space-between !important;
   padding: 0 12px 0 12px !important;
   cursor: ${props => props.full ? "default" : "pointer"} !important;
-  pointer-events: ${props => props.full ? "none" : "initial"} !important;
+  pointer-events: ${props => props.chosen ? "initial" : props.full ? "none" : "initial"} !important;
   p {
     font-weight: bold !important;
   }
