@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { Button } from "@material-ui/core";
 
-export default function Rooms({ rooms, chosenRoom, setChosenRoom, isLoading }) {
+export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad }) {
   rooms.forEach(room => {
     room.emptyBedsArray = [];
     room.occupiedBedsArray = [];
@@ -21,9 +21,9 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom, isLoading }) {
   return (
     <>
       <Header>Ótima pedida! Agora escolha seu quarto:</Header>
-      <RoomsContainer isLoading={isLoading}>
+      <RoomsContainer>
         {rooms.map(room => 
-          <Room onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds} chosen={room.id === chosenRoom.id}>
+          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds} chosen={room.id === chosenRoom.id}>
             <RoomName>{room.name}</RoomName>
             <Beds>
               {room.emptyBedsArray.map((bed, index) => {
@@ -55,7 +55,6 @@ const RoomsContainer = styled.div`
   gap: 17px 8px;
   max-width: 100%;
   flex-wrap: wrap;
-  pointer-events: ${props => props.isLoading ? "none" : "initial"};
 `;
 
 const Room = styled(Button)`

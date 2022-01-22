@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import useApi from "../../hooks/useApi";
 import ChosenHotel from "./ChosenHotel";
 import Load from "../shared/Load";
+import Loader from "react-loader-spinner";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
@@ -18,7 +19,7 @@ export default function Hotels({ rooms, hotels }) {
   const [ticketInfo, setTicketInfo] = useState();
   const [hasARoom, setHasARoom] = useState(false);
   const [majorLoad, setMajorLoad] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [minorLoad, setMinorLoad] = useState(false);
 
   useEffect(() => {
     getTicketInfo();
@@ -39,17 +40,17 @@ export default function Hotels({ rooms, hotels }) {
   }
 
   function postRoomHandler() {
-    setIsLoading(true);
+    setMinorLoad(true);
     const body = {
       roomId: chosenRoom.id,
     };
     ticket.updateTicketRoom(body, userData.user.id).then(res => {
       toast("Quarto escolhido com sucesso!");
       getTicketInfo();
-      setIsLoading(false);
+      setMinorLoad(false);
     }).catch(err => {
       toast("Houve um erro ao escolher o quarto.");
-      setIsLoading(false);
+      setMinorLoad(false);
     });
   }
 
@@ -107,9 +108,10 @@ export default function Hotels({ rooms, hotels }) {
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
       <SubTitle>Primeiro, escolha seu hotel</SubTitle>
-      <Container display="flex" isLoading={isLoading}>
+      <Container display="flex" minorLoad={minorLoad}>
         {hotels.map((hotel) => (
           <Option
+            disabled={minorLoad}
             chosen={chosenHotel.id === hotel.id ? 1 : 0}
             onClick={() => setChosenHotel(hotel)}
             variant="outlined"
@@ -130,8 +132,8 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
-      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} isLoading={isLoading}/>}
-      {chosenRoom&&<SendButton onClick={postRoomHandler} isLoading={isLoading}>RESERVAR QUARTO</SendButton>}
+      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} minorLoad={minorLoad}/>}
+      {chosenRoom&&<SendButton onClick={postRoomHandler} disabled={minorLoad}>{minorLoad? <Loader type="ThreeDots" color="#FFFFFF" height={13} /> :"RESERVAR QUARTO"}</SendButton>}
     </>
   );
 }
@@ -184,7 +186,6 @@ const Container = styled.div`
   display: ${(props) => props.display || "none"};
   gap: 2%;
   margin-bottom: 30px;
-  pointer-events: ${props => props.isLoading ? "none" : "initial"};
 `;
 
 const SubTitle = styled(Typography)`
@@ -206,6 +207,5 @@ const SendButton = styled(Button)`
   border-radius: 4px;
   border: none;
   font-size: 14px;
-  pointer-events: ${props => props.isLoading ? "none" : "initial"} !important;
   cursor: pointer;
 `;
