@@ -36,7 +36,7 @@ export default function Hotel() {
 
   function obtainRoomsInfo() {
     room.getRoomsInformations().then((res) => {
-      setRooms(res.data);
+      setRooms(res.data.sort((a, b) => a.id - b.id));
     });
   }
 

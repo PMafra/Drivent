@@ -1,10 +1,45 @@
 import { Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import Rooms from "../Rooms";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext";
+import { toast } from "react-toastify";
+import useApi from "../../hooks/useApi";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
+  const [chosenRoom, setChosenRoom] = useState("");
+  const { userData } = useContext(UserContext);
+  const { ticket } = useApi();
+  const [hasARoom, setHasARoom] = useState(false);
+
+  useEffect(() => {
+    getTicketInfo();
+  }, []);
+
+  function getTicketInfo() {
+    ticket.getTicketInformations().then(res => {
+      if(res.data[0].roomId) {
+        setHasARoom(true);
+      }
+    }).catch(err => {
+      toast("Houve um erro ao verificar se seu ticket possui um quarto.");
+    });
+  }
+
+  function postRoomHandler() {
+    const body = {
+      roomId: chosenRoom.id,
+    };
+    ticket.updateTicketRoom(body, userData.user.id).then(res => {
+      toast("Quarto escolhido com sucesso!");
+      getTicketInfo();
+    }).catch(err => {
+      toast("Houve um erro ao escolher o quarto.");
+    });
+  }
 
   function defineType(hotel) {
     let typesString = "";
@@ -48,6 +83,15 @@ export default function Hotels({ rooms, hotels }) {
     return totalEmptyBeds;
   }
 
+  if (hasARoom) {
+    return (
+      <>
+        <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
+        <SubTitle>Você já escolheu seu quarto: (à implementar)</SubTitle>
+      </>
+    );
+  }
+
   return (
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
@@ -58,6 +102,7 @@ export default function Hotels({ rooms, hotels }) {
             chosen={chosenHotel.id === hotel.id ? 1 : 0}
             onClick={() => setChosenHotel(hotel)}
             variant="outlined"
+            key={hotel.id}
           >
             <img src={hotel.imgUrl} alt="" />
             <HotelInfo>
@@ -74,6 +119,8 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
+      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
+      {chosenRoom&&<SendButton onClick={postRoomHandler}>Reservar Quarto</SendButton>}
     </>
   );
 }
@@ -136,4 +183,16 @@ const SubTitle = styled(Typography)`
 
 const StyleTypography = styled(Typography)`
   margin-bottom: 35px !important;
+`;
+
+const SendButton = styled.button`
+  margin-top: 46px;
+  width: 182px;
+  height: 37px;
+  background: #E0E0E0;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
 `;

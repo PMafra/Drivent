@@ -9,4 +9,12 @@ export default class TicketApi extends AuthenticatedApi {
       }
     });
   }
+
+  updateTicketRoom(body, userId) {
+    return api.post(`/rooms/${userId}`, body, {
+      headers: {
+        ...this.getAuthorizationHeader()
+      }
+    });
+  }
 }
