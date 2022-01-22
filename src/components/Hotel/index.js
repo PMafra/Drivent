@@ -3,10 +3,27 @@ import { Button } from "@material-ui/core";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Rooms from "../Rooms";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext";
+import { toast } from "react-toastify";
+import useApi from "../../hooks/useApi";
 
 export default function Hotels({ rooms, hotels }) {
   const [chosenHotel, setChosenHotel] = useState("");
   const [chosenRoom, setChosenRoom] = useState("");
+  const { userData } = useContext(UserContext);
+  const { ticket } = useApi();
+
+  function postRoomHandler() {
+    const body = {
+      roomId: chosenRoom.id,
+    };
+    ticket.updateTicketRoom(body, userData.user.id).then(res => {
+      toast("Quarto escolhido com sucesso!");
+    }).catch(err => {
+      toast("Houve um erro ao escolher o quarto.");
+    });
+  }
 
   function defineType(hotel) {
     let typesString = "";
@@ -60,6 +77,7 @@ export default function Hotels({ rooms, hotels }) {
             chosen={chosenHotel.id === hotel.id ? 1 : 0}
             onClick={() => setChosenHotel(hotel)}
             variant="outlined"
+            key={hotel.id}
           >
             <img src={hotel.imgUrl} alt="" />
             <HotelInfo>
@@ -77,7 +95,7 @@ export default function Hotels({ rooms, hotels }) {
         ))}
       </Container>
       {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
-      {chosenRoom&&<SendButton>Reservar Quarto</SendButton>}
+      {chosenRoom&&<SendButton onClick={postRoomHandler}>Reservar Quarto</SendButton>}
     </>
   );
 }

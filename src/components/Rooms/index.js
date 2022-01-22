@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { Button } from "@material-ui/core";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext";
 
 export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
   rooms.forEach(room => {
