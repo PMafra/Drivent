@@ -4,7 +4,7 @@ import styled from "styled-components";
 export default function ChosenHotel({ ticketInfo, hasARoom }) {
   const { hotel } = ticketInfo.room;
   return (
-    <>
+    <Wrapper>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
       <SubTitle>Você já escolheu seu quarto:</SubTitle>
       <Option>
@@ -21,9 +21,16 @@ export default function ChosenHotel({ ticketInfo, hasARoom }) {
           </div>
         </HotelInfo>
       </Option>
-    </>
+      <div></div>
+      <SendButton>TROCAR DE QUARTO</SendButton>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`]
+  display: flex;
+  flex-direction: column;
+`;
 
 const HotelInfo = styled.span`
     font-size: 12px;
@@ -77,4 +84,16 @@ const Option = styled(Button)`
       height: 70px;
     }
   }
+`;
+
+const SendButton = styled(Button)`
+  margin-top: 38px !important;
+  width: 182px;
+  height: 37px;
+  background: #E0E0E0 !important;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
 `;

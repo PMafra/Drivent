@@ -25,12 +25,11 @@ export default function Hotels({ rooms, hotels }) {
 
   function getTicketInfo() {
     ticket.getTicketInformations().then(res => {
-      console.log(res.data[0]);
       if(res.data[0].roomId) {
-        setHasARoom(true);
         setTicketInfo(res.data[0]);
-        setMajorLoad(false);
+        setHasARoom(true);
       }
+      setMajorLoad(false);
     }).catch(err => {
       toast("Houve um erro ao verificar se seu ticket possui um quarto.");
     });
@@ -126,7 +125,7 @@ export default function Hotels({ rooms, hotels }) {
         ))}
       </Container>
       {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
-      {chosenRoom&&<SendButton onClick={postRoomHandler}>Reservar Quarto</SendButton>}
+      {chosenRoom&&<SendButton onClick={postRoomHandler}>RESERVAR QUARTO</SendButton>}
     </>
   );
 }
@@ -191,11 +190,11 @@ const StyleTypography = styled(Typography)`
   margin-bottom: 35px !important;
 `;
 
-const SendButton = styled.button`
-  margin-top: 46px;
+const SendButton = styled(Button)`
+  margin-top: 46px !important;
   width: 182px;
   height: 37px;
-  background: #E0E0E0;
+  background: #E0E0E0 !important;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   border: none;
