@@ -18,6 +18,7 @@ export default function Hotels({ rooms, hotels }) {
   const [ticketInfo, setTicketInfo] = useState();
   const [hasARoom, setHasARoom] = useState(false);
   const [majorLoad, setMajorLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getTicketInfo();
@@ -27,6 +28,8 @@ export default function Hotels({ rooms, hotels }) {
     ticket.getTicketInformations().then(res => {
       if(res.data[0].roomId) {
         setTicketInfo(res.data[0]);
+        setChosenHotel(res.data[0].room.hotel);
+        setChosenRoom(res.data[0].room);
         setHasARoom(true);
       }
       setMajorLoad(false);
@@ -36,14 +39,17 @@ export default function Hotels({ rooms, hotels }) {
   }
 
   function postRoomHandler() {
+    setIsLoading(true);
     const body = {
       roomId: chosenRoom.id,
     };
     ticket.updateTicketRoom(body, userData.user.id).then(res => {
       toast("Quarto escolhido com sucesso!");
       getTicketInfo();
+      setIsLoading(false);
     }).catch(err => {
       toast("Houve um erro ao escolher o quarto.");
+      setIsLoading(false);
     });
   }
 
@@ -101,7 +107,7 @@ export default function Hotels({ rooms, hotels }) {
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
       <SubTitle>Primeiro, escolha seu hotel</SubTitle>
-      <Container display="flex">
+      <Container display="flex" isLoading={isLoading}>
         {hotels.map((hotel) => (
           <Option
             chosen={chosenHotel.id === hotel.id ? 1 : 0}
@@ -124,8 +130,8 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
-      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
-      {chosenRoom&&<SendButton onClick={postRoomHandler}>RESERVAR QUARTO</SendButton>}
+      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} isLoading={isLoading}/>}
+      {chosenRoom&&<SendButton onClick={postRoomHandler} isLoading={isLoading}>RESERVAR QUARTO</SendButton>}
     </>
   );
 }
@@ -178,6 +184,7 @@ const Container = styled.div`
   display: ${(props) => props.display || "none"};
   gap: 2%;
   margin-bottom: 30px;
+  pointer-events: ${props => props.isLoading ? "none" : "initial"};
 `;
 
 const SubTitle = styled(Typography)`
@@ -199,5 +206,6 @@ const SendButton = styled(Button)`
   border-radius: 4px;
   border: none;
   font-size: 14px;
+  pointer-events: ${props => props.isLoading ? "none" : "initial"} !important;
   cursor: pointer;
 `;
