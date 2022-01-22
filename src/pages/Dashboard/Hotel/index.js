@@ -57,6 +57,6 @@ export default function Hotel() {
     );
   }
   return(
-    <Hotels hotels={hotels} rooms={rooms} />
+    <Hotels hotels={hotels} rooms={rooms}  obtainRoomsInfo={obtainRoomsInfo}/>
   );
 }

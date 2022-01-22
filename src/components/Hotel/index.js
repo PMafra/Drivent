@@ -7,13 +7,19 @@ import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useApi";
+import ChosenHotel from "./ChosenHotel";
+import Load from "../shared/Load";
+import Loader from "react-loader-spinner";
 
-export default function Hotels({ rooms, hotels }) {
+export default function Hotels({ rooms, hotels, obtainRoomsInfo }) {
   const [chosenHotel, setChosenHotel] = useState("");
   const [chosenRoom, setChosenRoom] = useState("");
   const { userData } = useContext(UserContext);
   const { ticket } = useApi();
+  const [ticketInfo, setTicketInfo] = useState();
   const [hasARoom, setHasARoom] = useState(false);
+  const [majorLoad, setMajorLoad] = useState(true);
+  const [minorLoad, setMinorLoad] = useState(false);
 
   useEffect(() => {
     getTicketInfo();
@@ -21,23 +27,32 @@ export default function Hotels({ rooms, hotels }) {
 
   function getTicketInfo() {
     ticket.getTicketInformations().then(res => {
+      setTicketInfo(res.data[0]);
       if(res.data[0].roomId) {
+        setChosenHotel(res.data[0].room.hotel);
+        setChosenRoom(res.data[0].room);
         setHasARoom(true);
       }
+      obtainRoomsInfo();
+      setMajorLoad(false);
     }).catch(err => {
       toast("Houve um erro ao verificar se seu ticket possui um quarto.");
+      setMajorLoad(false);
     });
   }
 
   function postRoomHandler() {
+    setMinorLoad(true);
     const body = {
       roomId: chosenRoom.id,
     };
     ticket.updateTicketRoom(body, userData.user.id).then(res => {
       toast("Quarto escolhido com sucesso!");
       getTicketInfo();
+      setMinorLoad(false);
     }).catch(err => {
       toast("Houve um erro ao escolher o quarto.");
+      setMinorLoad(false);
     });
   }
 
@@ -83,22 +98,22 @@ export default function Hotels({ rooms, hotels }) {
     return totalEmptyBeds;
   }
 
+  if(majorLoad) {
+    return <Load />;
+  }
+
   if (hasARoom) {
-    return (
-      <>
-        <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
-        <SubTitle>Você já escolheu seu quarto: (à implementar)</SubTitle>
-      </>
-    );
+    return <ChosenHotel ticketInfo={ticketInfo} setHasARoom={setHasARoom} />;
   }
 
   return (
     <>
       <StyleTypography variant="h4">Escolha de hotel e quarto</StyleTypography>
       <SubTitle>Primeiro, escolha seu hotel</SubTitle>
-      <Container display="flex">
+      <Container display="flex" minorLoad={minorLoad}>
         {hotels.map((hotel) => (
           <Option
+            disabled={minorLoad}
             chosen={chosenHotel.id === hotel.id ? 1 : 0}
             onClick={() => setChosenHotel(hotel)}
             variant="outlined"
@@ -119,8 +134,8 @@ export default function Hotels({ rooms, hotels }) {
           </Option>
         ))}
       </Container>
-      {chosenHotel&&<Rooms rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} />}
-      {chosenRoom&&<SendButton onClick={postRoomHandler}>Reservar Quarto</SendButton>}
+      {chosenHotel&&<Rooms oldRoomId={ticketInfo.roomId} rooms={rooms.filter(room => room.hotel.id === chosenHotel.id)} setChosenRoom={setChosenRoom} chosenRoom={chosenRoom} minorLoad={minorLoad}/>}
+      {chosenRoom&&<SendButton onClick={postRoomHandler} disabled={minorLoad}>{minorLoad? <Loader type="ThreeDots" color="#FFFFFF" height={13} /> :"RESERVAR QUARTO"}</SendButton>}
     </>
   );
 }
@@ -185,11 +200,11 @@ const StyleTypography = styled(Typography)`
   margin-bottom: 35px !important;
 `;
 
-const SendButton = styled.button`
-  margin-top: 46px;
+const SendButton = styled(Button)`
+  margin-top: 46px !important;
   width: 182px;
   height: 37px;
-  background: #E0E0E0;
+  background: #E0E0E0 !important;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   border: none;

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsPerson, BsPersonFill } from "react-icons/bs";
 import { Button } from "@material-ui/core";
 
-export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
+export default function Rooms({ rooms, chosenRoom, setChosenRoom, minorLoad, oldRoomId }) {
   rooms.forEach(room => {
     room.emptyBedsArray = [];
     room.occupiedBedsArray = [];
@@ -11,6 +11,10 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
     }
     for(let i=0; i<room.occupiedBeds; i++) {
       room.occupiedBedsArray.push(1);
+    }
+    if(room.id === oldRoomId) {
+      room.emptyBedsArray.push(1);
+      room.occupiedBedsArray.pop();
     }
   });
 
@@ -23,7 +27,7 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
       <Header>Ótima pedida! Agora escolha seu quarto:</Header>
       <RoomsContainer>
         {rooms.map(room => 
-          <Room onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBeds} chosen={room.id === chosenRoom.id}>
+          <Room disabled={minorLoad} key={room.id} onClick={() => choseRoomHandler(room)} full={room.totalBeds === room.occupiedBedsArray.length ? 1: 0} chosen={room.id === chosenRoom.id ? 1: 0}>
             <RoomName>{room.name}</RoomName>
             <Beds>
               {room.emptyBedsArray.map((bed, index) => {
@@ -33,7 +37,7 @@ export default function Rooms({ rooms, chosenRoom, setChosenRoom }) {
                 }
                 return (<BsPerson key={index}/>);
               })}
-              {room.id === chosenRoom.id ? <ChosenBed chosen /> : ""}
+              {room.id === chosenRoom.id ? <ChosenBed chosen={1} /> : ""}
               {room.occupiedBedsArray.map((bed, index) => <BsPersonFill key={index}/>)}
             </Beds>
           </Room>
@@ -61,7 +65,7 @@ const Room = styled(Button)`
   width: 190px;
   height: 45px;
   border: 1px solid #CECECE !important;
-  background: ${props => props.full ? "#E9E9E9" : props.chosen ? "#FFEED2" : "inherit"} !important;
+  background: ${props => props.chosen ? "#FFEED2" : props.full ? "#E9E9E9" : "inherit"} !important;
   box-sizing: border-box;
   border-radius: 10px !important;
   display: flex !important;
@@ -69,7 +73,7 @@ const Room = styled(Button)`
   justify-content: space-between !important;
   padding: 0 12px 0 12px !important;
   cursor: ${props => props.full ? "default" : "pointer"} !important;
-  pointer-events: ${props => props.full ? "none" : "initial"} !important;
+  pointer-events: ${props => props.chosen ? "initial" : props.full ? "none" : "initial"} !important;
   p {
     font-weight: bold !important;
   }
