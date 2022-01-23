@@ -4,15 +4,52 @@ import styled from "styled-components";
 import Typography from "@material-ui/core/Typography";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
+import { toast } from "react-toastify";
 
 import useApi from "../../hooks/useApi";
+import { useForm } from "../../hooks/useForm";
 
+import creditCardValidation from "./creditCardValidation";
 import TicketDetails from "./TicketDetails";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
+import { ErrorMsg } from "../PersonalInformationForm/ErrorMsg";
 
 export default function DetailsAndPayment() {
   const { ticket } = useApi();
+  const {
+    handleSubmit,
+    handleChange,
+    data,
+    errors,
+    setData,
+  } = useForm({
+    validations: creditCardValidation,
+
+    onSubmit: () => {
+      ticket.confirmPayment().then(() => {
+        toast("Pagamento confirmado!");
+      }).catch((error) => {
+        if (error.response?.data?.details) {
+          for (const detail of error.response.data.details) {
+            toast(detail);
+          }
+        } else {
+          toast("Não foi possível");
+        }
+        /* eslint-disable-next-line no-console */
+        console.log(error);
+      });
+    },
+
+    initialValues: {
+      number: "",
+      name: "",
+      expiry: "",
+      cvc: "",
+      focus: ""
+    },
+  });
 
   const [ticketData, setTicketData] = useState({
     id: "",
@@ -20,21 +57,9 @@ export default function DetailsAndPayment() {
     price: "",
   });
 
-  const [cardData, setCardData] = useState({
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    focus: ""
-  });
-
-  const handleCardChange = (prop) => (event) => {
-    setCardData({ ...cardData, [prop]: prop === "focus"? event.target.name : event.target.value });
+  const handleSelectChange = (prop) => (event) => {
+    setData({ ...data, [prop]: event.target.name });
   };
-
-  function handlePaymentSubmit(event) {
-    event.preventDefault();
-  }
 
   useEffect(() => {
     ticket.getTicketInformations().then(response => {
@@ -63,14 +88,14 @@ export default function DetailsAndPayment() {
       <CardInfoContainer>
         <CardWrapper>
           <Cards 
-            number = {cardData.number} 
-            name = {cardData.name} 
-            expiry = {cardData.expiry} 
-            cvc = {cardData.cvc} 
-            focused = {cardData.focus}
+            number = {data.number} 
+            name = {data.name} 
+            expiry = {data.expiry} 
+            cvc = {data.cvc} 
+            focused = {data.focus}
           />
         </CardWrapper>
-        <Form id="card-form" onSubmit={handlePaymentSubmit}>
+        <Form id="card-form" onSubmit={handleSubmit}>
           <Input 
             type = "text"
             name = "number"
@@ -78,46 +103,50 @@ export default function DetailsAndPayment() {
             style = {{ width: "100%" }}
             maxLength = "20"
             mask = "9999 9999 9999 9999"
-            value = {cardData.number}
-            onChange = {handleCardChange("number")}
-            onSelect = {handleCardChange("focus")}
+            value = {data.number}
+            onChange = {handleChange("number")}
+            onSelect = {handleSelectChange("focus")}
             inputProps={{
-              autocomplete: "new-password",
+              autoComplete: "new-password",
               form: {
                 autocomplete: "off",
               },
             }}
           />
+          {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
           <Input 
             type = "text"
             name = "name"
             label = "Name"
-            value = {cardData.name}
-            onChange = {handleCardChange("name")}
-            onSelect = {handleCardChange("focus")}
+            value = {data.name}
+            onChange = {handleChange("name")}
+            onSelect = {handleSelectChange("focus")}
             variant = "outlined"
           />
+          {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
           <HorizontalDisplay>
             <Expiry 
               type = "text"
               name = "expiry"
               label = "Valid Thru"
               mask = "99/99"
-              value = {cardData.expiry}
-              onChange = {handleCardChange("expiry")}
-              onSelect = {handleCardChange("focus")}
+              value = {data.expiry}
+              onChange = {handleChange("expiry")}
+              onSelect = {handleSelectChange("focus")}
               variant = "outlined"
             />
+            {errors.expiry && <ErrorMsg>{errors.expiry}</ErrorMsg>}
             <CVC 
               type = "text"
               name = "cvc"
               label = "CVC"
               mask = "999"
-              value = {cardData.cvc}
-              onChange = {handleCardChange("cvc")}
-              onSelect = {handleCardChange("focus")}
+              value = {data.cvc}
+              onChange = {handleChange("cvc")}
+              onSelect = {handleSelectChange("focus")}
               variant = "outlined"
             />
+            {errors.cvc && <ErrorMsg>{errors.cvc}</ErrorMsg>}
           </HorizontalDisplay>
         </Form>
       </CardInfoContainer>
