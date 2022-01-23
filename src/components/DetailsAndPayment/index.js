@@ -9,6 +9,7 @@ import useApi from "../../hooks/useApi";
 
 import TicketDetails from "./TicketDetails";
 import Input from "../Form/Input";
+import Button from "../Form/Button";
 
 export default function DetailsAndPayment() {
   const { ticket } = useApi();
@@ -30,6 +31,10 @@ export default function DetailsAndPayment() {
   const handleCardChange = (prop) => (event) => {
     setCardData({ ...cardData, [prop]: prop === "focus"? event.target.name : event.target.value });
   };
+
+  function handlePaymentSubmit(event) {
+    event.preventDefault();
+  }
 
   useEffect(() => {
     ticket.getTicketInformations().then(response => {
@@ -55,15 +60,17 @@ export default function DetailsAndPayment() {
         price={ticketData.price}
       />
       <Subtitle variant="h6">Pagamento</Subtitle>
-      <CardWrapper>
-        <Cards 
-          number = {cardData.number} 
-          name = {cardData.name} 
-          expiry = {cardData.expiry} 
-          cvc = {cardData.cvc} 
-          focused = {cardData.focus}
-        />
-        <Form >
+      <CardInfoContainer>
+        <CardWrapper>
+          <Cards 
+            number = {cardData.number} 
+            name = {cardData.name} 
+            expiry = {cardData.expiry} 
+            cvc = {cardData.cvc} 
+            focused = {cardData.focus}
+          />
+        </CardWrapper>
+        <Form id="card-form" onSubmit={handlePaymentSubmit}>
           <Input 
             type = "text"
             name = "number"
@@ -113,7 +120,10 @@ export default function DetailsAndPayment() {
             />
           </HorizontalDisplay>
         </Form>
-      </CardWrapper>
+      </CardInfoContainer>
+      <Button form = "card-form" type = "submit">
+          FINALIZAR PAGAMENTO
+      </Button>
     </>
   );
 }
@@ -128,10 +138,16 @@ const Subtitle = styled(Typography)`
   color: #8E8E8E;
 `;
 
-const CardWrapper = styled.div`
+const CardInfoContainer = styled.div`
   display: flex;
   height: 225px;
   width: 706px;
+`;
+
+const CardWrapper = styled.div`
+  width: fit-content;
+  height: fit-content;
+  margin: 10px 15px 0 0;
 `;
 
 const Form = styled.form`
@@ -139,6 +155,7 @@ const Form = styled.form`
   height:100%;
   display: flex;
   flex-direction: column;
+  justify-content:start;
 `;
 
 const HorizontalDisplay = styled.div`
