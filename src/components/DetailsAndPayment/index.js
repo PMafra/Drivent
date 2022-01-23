@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Cards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
@@ -9,6 +8,7 @@ import "react-credit-cards/es/styles-compiled.css";
 import useApi from "../../hooks/useApi";
 
 import TicketDetails from "./TicketDetails";
+import Input from "../Form/Input";
 
 export default function DetailsAndPayment() {
   const { ticket } = useApi();
@@ -65,40 +65,50 @@ export default function DetailsAndPayment() {
         />
         <Form >
           <Input 
-            type = "tel"
+            type = "text"
             name = "number"
-            placeholder = "Card number"
+            label = "Card number"
+            style = {{ width: "100%" }}
+            maxLength = "20"
+            mask = "9999 9999 9999 9999"
             value = {cardData.number}
             onChange = {handleCardChange("number")}
-            onFocus = {handleCardChange("focus")}
-            variant = "outlined"
+            onSelect = {handleCardChange("focus")}
+            inputProps={{
+              autocomplete: "new-password",
+              form: {
+                autocomplete: "off",
+              },
+            }}
           />
           <Input 
             type = "text"
             name = "name"
-            placeholder = "Name"
+            label = "Name"
             value = {cardData.name}
             onChange = {handleCardChange("name")}
-            onFocus = {handleCardChange("focus")}
+            onSelect = {handleCardChange("focus")}
             variant = "outlined"
           />
           <HorizontalDisplay>
             <Expiry 
               type = "text"
               name = "expiry"
-              placeholder = "Valid Thru"
+              label = "Valid Thru"
+              mask = "99/99"
               value = {cardData.expiry}
               onChange = {handleCardChange("expiry")}
-              onFocus = {handleCardChange("focus")}
+              onSelect = {handleCardChange("focus")}
               variant = "outlined"
             />
             <CVC 
-              type = "tel"
+              type = "text"
               name = "cvc"
-              placeholder = "CVC"
+              label = "CVC"
+              mask = "999"
               value = {cardData.cvc}
               onChange = {handleCardChange("cvc")}
-              onFocus = {handleCardChange("focus")}
+              onSelect = {handleCardChange("focus")}
               variant = "outlined"
             />
           </HorizontalDisplay>
@@ -136,20 +146,14 @@ const HorizontalDisplay = styled.div`
   flex-direction: row;
 `;
 
-const Input = styled(TextField)`
-  width: 100%;
-  height: 30px;
-  margin-bottom: 35px!important;
-`;
-
-const CVC = styled(TextField)`
+const CVC = styled(Input)`
   width: 150px;
   height: 30px;
   margin-bottom: 8px!important;
 `;
 
-const Expiry = styled(TextField)`
+const Expiry = styled(Input)`
   width: 220px;
   height: 30px;
-  margin: 0 20px 8px 0!important;
+  margin: 8px 20px 8px 0!important;
 `;
