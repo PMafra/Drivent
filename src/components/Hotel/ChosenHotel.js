@@ -28,7 +28,7 @@ export default function ChosenHotel({ ticketInfo, setHasARoom }) {
   );
 }
 
-const Wrapper = styled.div`]
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
