@@ -9,7 +9,7 @@ export default function Payment() {
   const { enrollment } = useApi();
 
   const [subscription, setSubscription] = useState(false);
-  const [ reservedTicket, setReservedTicket] = useState(false);
+  const [ reservedTicket, setReservedTicket] = useState(true);
 
   useEffect(() => {
     enrollment.getPersonalInformations().then((resp) => {
