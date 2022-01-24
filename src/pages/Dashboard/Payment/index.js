@@ -26,7 +26,7 @@ export default function Payment() {
         />
       ) : (
         <>{ !reservedTicket? (
-          <Tickets />
+          <Tickets setReservedTicket={setReservedTicket}/>
         ) : (
           <DetailsAndPayment />
         )
