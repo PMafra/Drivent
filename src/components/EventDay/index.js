@@ -42,6 +42,7 @@ export default function EventDays({ eventDays }) {
           </Option>
         ))}
       </Container>
+      {/* Renderizar as atividades aqui */}
     </>
   );
 }
