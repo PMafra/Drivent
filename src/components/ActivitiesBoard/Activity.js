@@ -1,13 +1,21 @@
 import styled from "styled-components";
 import { MdExitToApp } from "react-icons/md";
 import { IconContext } from "react-icons";
+import dayjs from "dayjs";
 
-export default function ActivitiesBoard({ id, name, startTime, endTime, totalSeats }) {
+export default function Activity({ id, name, startTime, endTime, totalSeats }) {
+  // 2021-02-05 is just a date so dayjs can reconize the time as a date
+  const formatedStartTime = "2022-01-28" + startTime;
+  const formatedEndTime = "2022-01-28" + endTime;
+  const showStartTime = dayjs(formatedStartTime).format("HH:mm"); 
+  const showEndTime = dayjs(formatedEndTime).format("HH:mm");    
+  const activityLength =  dayjs(formatedEndTime).diff(formatedStartTime, "hour", true);
+                                                                                  
   return(
-    < Container >
+    < Container length = {activityLength === 1 ? 80 : ((activityLength * 80) + 10)}>
       <InfoWrapper>
         <Name>{name}</Name>
-        <Time>{startTime} - {endTime}</Time>
+        <Time>{showStartTime} - {showEndTime}</Time>
       </InfoWrapper>
       < VacancyInfo >
         <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
@@ -16,14 +24,14 @@ export default function ActivitiesBoard({ id, name, startTime, endTime, totalSea
         < AvailableSeats >
           {totalSeats} vagas
         </AvailableSeats>
-      </ VacancyInfo>
+      </ VacancyInfo >
     </ Container >
   );
 }
 
 const Container = styled.div`
     width: 91%;
-    height: 80px;
+    height: ${ props => props.length ? `${props.length}px` : "80px"};
     background-color: #F1F1F1;
     border-radius: 5px;
     display: flex;
@@ -32,7 +40,7 @@ const Container = styled.div`
 `;
 
 const InfoWrapper = styled.div`
-  width: 70%;
+  width: 74%;
   height: 70%;
   font-size: 12px;
   display: flex;
@@ -46,6 +54,7 @@ const InfoWrapper = styled.div`
 const Name = styled.span`
   font-weight: 700;
   margin: 3px 0 8px 0;
+  padding-right: 5px;
 `;
 
 const Time = styled.span`
@@ -53,7 +62,7 @@ const Time = styled.span`
 `;
 
 const VacancyInfo = styled.button`
-  width: 30%;
+  width: 26%;
   height: 70%;
   display: flex;
   flex-direction: column;
