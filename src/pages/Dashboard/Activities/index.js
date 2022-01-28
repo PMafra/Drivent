@@ -1,14 +1,11 @@
-<<<<<<< HEAD
-import ActivitiesBoard from "../../../components/ActivitiesBoard.js";
-
-export default function Activities() {
-  return <ActivitiesBoard />;
-=======
 import { useState, useEffect } from "react";
-import Unauthorized from "../../../components/shared/Unauthorized";
-import useApi from "../../../hooks/useApi";
-import EventDays from "../../../components/EventDay/index";
 import { toast } from "react-toastify";
+
+import useApi from "../../../hooks/useApi";
+
+import Unauthorized from "../../../components/shared/Unauthorized";
+import EventDays from "../../../components/EventDay/index";
+import ActivitiesBoard from "../../../components/ActivityBoard";
 
 export default function Activities() {
   const { ticket, eventDay } = useApi();
@@ -62,5 +59,4 @@ export default function Activities() {
   return(
     <EventDays eventDays={eventDays}/>
   );
->>>>>>> e277ff9a61da61b51f22c8711d415d9504efb505
 }
