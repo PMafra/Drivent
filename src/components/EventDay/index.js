@@ -1,13 +1,11 @@
 import { Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { format } from "date-fns";
 import pt from "date-fns/locale/pt";
 
-export default function EventDays({ eventDays }) {
-  const [chosenEventDay, setChosenEventDay] = useState("");
-
+export default function EventDays({ eventDays, chosenEventDay, setChosenEventDay }) {
   function setWeekDay(date) {
     const newDate = new Date(date);
     const weekDay = format(newDate, "eeee", { locale: pt });
@@ -36,18 +34,16 @@ export default function EventDays({ eventDays }) {
             key={eventDay.id}
           >
             <EventDayInfo>
-              <div>{setWeekDay(eventDay.day)},</div>
-              <div>{setDateFormat(eventDay.day)}</div>
+              {setWeekDay(eventDay.day)}, {setDateFormat(eventDay.day)}
             </EventDayInfo>
           </Option>
         ))}
       </Container>
-      {/* Renderizar as atividades aqui */}
     </>
   );
 }
 
-const EventDayInfo = styled.span`
+const EventDayInfo = styled.div`
     font-size: 14px;
     line-height: 17px;
     color: #000000;

@@ -2,9 +2,15 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
-import Load from "../shared/Load";
+import Load from "../../components/shared/Load";
 
-export default function ActivitiesBoard() {
+export default function ActivitiesBoard({ eventDayId }) {
+  const [ loading, setLoading ] = useState(true);
+
+  useState(() => {
+
+  }, []);
+
   return(
     <BoardContainer>
       <HallName>Auditório Principal</HallName>
@@ -22,10 +28,6 @@ const BoardContainer = styled.div`
     display: grid;
     grid-template-columns: 288px 288px 288px;
     grid-template-rows: 40px 391px;
-
-    :nth-child(4) {
-      border-left: 1px solid black;
-  }
 `;
 
 const HallName = styled.div`
