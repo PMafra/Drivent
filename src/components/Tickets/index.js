@@ -53,6 +53,7 @@ export default function Tickets({ setReservedTicket }) {
       .postTicketInformations(body)
       .then(() => {
         setReservedTicket(true);
+        toast("Seu ticket foi reservado com sucesso!");
       })
       .catch((error) => {
         if (error.response.status === 409) {
