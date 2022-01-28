@@ -3,6 +3,7 @@ import Unauthorized from "../../../components/shared/Unauthorized";
 import useApi from "../../../hooks/useApi";
 import Hotels from "../../../components/Hotel/index";
 import { toast } from "react-toastify";
+import Load from "../../../components/shared/Load";
 
 export default function Hotel() {
   const { ticket, hotel, room } = useApi();
@@ -10,6 +11,7 @@ export default function Hotel() {
   const [authorized, setAuthorized] = useState(false);
   const [hotels, setHotels] = useState("");
   const [rooms, setRooms] = useState("");
+  const [majorLoad, setMajorLoad] = useState(true);
 
   function obtainPaymentInfo() {
     ticket.getTicketInformations().then((res) => {
@@ -22,13 +24,16 @@ export default function Hotel() {
   function checkTicketInfo(userTicket) {
     if (!userTicket?.isPaid) {
       setMessage("Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem");
+      setMajorLoad(false);
       return;
     };
     if (userTicket.modality.name !== "Presencial + Com Hotel") {
       setMessage("Sua modalidade de ingresso não inclui hospedagem. Prossiga para a escolha de atividades");
+      setMajorLoad(false);
       return;
     };
     setAuthorized(true);
+    setMajorLoad(false);
   }
 
   function obtainHotelsInfo() {
@@ -53,6 +58,10 @@ export default function Hotel() {
       obtainRoomsInfo();
     };
   }, [authorized]);
+
+  if(majorLoad || ((!hotels || !rooms) && authorized)) {
+    return <Load />;
+  }
 
   if (!authorized || !hotels || !rooms) {
     return(
