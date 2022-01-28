@@ -2,24 +2,47 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
+import useApi from "../../hooks/useApi";
+
 import Load from "../../components/shared/Load";
 
-export default function ActivitiesBoard({ eventDayId }) {
+export default function ActivitiesBoard({ chosenEventDay }) {
+  const eventDayId = chosenEventDay.id;
+  const { activity } = useApi();
   const [ loading, setLoading ] = useState(true);
-
-  useState(() => {
-
-  }, []);
+  const [ activities, setActivities ] = useState("");
+  
+  useEffect(() => {
+    activity.getEventDayActivities(eventDayId).then( (res) => {
+      setActivities(res.data);
+      setLoading(false);
+    })
+      .catch( (err) => {
+        toast("Houve um problema com as atividades desse dia");
+        setLoading(false);
+      });
+  }, [eventDayId]);
 
   return(
-    <BoardContainer>
-      <HallName>Auditório Principal</HallName>
-      <HallName>Auditório Lateral</HallName>
-      <HallName>Sala de Workshop</HallName>
-      <FirstEventsContainer />
-      <EventsContainer />
-      <EventsContainer />
-    </BoardContainer>
+    <>
+      { loading 
+        ? (
+          < Load />
+        )
+        : (
+          <BoardContainer>
+            <HallName>Auditório Principal</HallName>
+            <HallName>Auditório Lateral</HallName>
+            <HallName>Sala de Workshop</HallName>
+            < FirstEventsContainer >
+              {eventDayId}
+            </ FirstEventsContainer>
+            <EventsContainer />
+            <EventsContainer />
+          </BoardContainer>
+        )
+      }
+    </>
   );
 }
 

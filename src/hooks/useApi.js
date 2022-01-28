@@ -7,6 +7,7 @@ import TicketApi from "../services/TicketApi";
 import HotelApi from "../services/HotelApi";
 import RoomApi from "../services/RoomApi";
 import EventDayApi from "../services/EventDayApi";
+import ActivityApi from "../services/ActivityApi";
 
 export default function useApi() {
   return {
@@ -19,5 +20,6 @@ export default function useApi() {
     hotel: new HotelApi(),
     room: new RoomApi(),
     eventDay: new EventDayApi(),
+    activity: new ActivityApi(),
   };
 }

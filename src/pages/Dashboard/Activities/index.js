@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import styled from "styled-components";
 
 import useApi from "../../../hooks/useApi";
 
@@ -65,7 +64,7 @@ export default function Activities() {
         chosenEventDay = { chosenEventDay }
         setChosenEventDay={ setChosenEventDay }
       />
-      < ActivitiesBoard />
+      {chosenEventDay && < ActivitiesBoard chosenEventDay={chosenEventDay}/>}
     </>
   );
 }
