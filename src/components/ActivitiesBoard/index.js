@@ -5,16 +5,24 @@ import { toast } from "react-toastify";
 import useApi from "../../hooks/useApi";
 
 import Load from "../../components/shared/Load";
+import Activity from "./Activity";
 
 export default function ActivitiesBoard({ chosenEventDay }) {
   const eventDayId = chosenEventDay.id;
   const { activity } = useApi();
   const [ loading, setLoading ] = useState(true);
-  const [ activities, setActivities ] = useState("");
+  const [ activitiesHall1, setActivitiesHall1 ] = useState("");
+  const [ activitiesHall2, setActivitiesHall2 ] = useState("");
+  const [ activitiesHall3, setActivitiesHall3 ] = useState("");
   
   useEffect(() => {
     activity.getEventDayActivities(eventDayId).then( (res) => {
-      setActivities(res.data);
+      const hall1 = res.data.filter( activity => activity.hall.id === 1);
+      const hall2 = res.data.filter( activity => activity.hall.id === 2);
+      const hall3 = res.data.filter( activity => activity.hall.id === 3);
+      setActivitiesHall1(hall1);
+      setActivitiesHall2(hall2);
+      setActivitiesHall3(hall3);
       setLoading(false);
     })
       .catch( (err) => {
@@ -34,11 +42,39 @@ export default function ActivitiesBoard({ chosenEventDay }) {
             <HallName>Auditório Principal</HallName>
             <HallName>Auditório Lateral</HallName>
             <HallName>Sala de Workshop</HallName>
-            < FirstEventsContainer >
-              {eventDayId}
-            </ FirstEventsContainer>
-            <EventsContainer />
-            <EventsContainer />
+            < ContainerHall1 >
+              {activitiesHall1.map( activity => 
+                < Activity 
+                  key = {activity.id}
+                  id = {activity.id}
+                  name = {activity.name}
+                  startTime = {activity.startTime}
+                  endTime = {activity.endTime}
+                  totalSeats = {activity.totalSeats}
+                />)}
+            </ ContainerHall1>
+            < ContainerHall2 >
+              {activitiesHall2.map( activity => 
+                < Activity 
+                  key = {activity.id}
+                  id = {activity.id}
+                  name = {activity.name}
+                  startTime = {activity.startTime}
+                  endTime = {activity.endTime}
+                  totalSeats = {activity.totalSeats}
+                />)}
+            </ ContainerHall2>
+            < ContainerHall3 >
+              {activitiesHall3.map( activity => 
+                < Activity 
+                  key = {activity.id}
+                  id = {activity.id}
+                  name = {activity.name}
+                  startTime = {activity.startTime}
+                  endTime = {activity.endTime}
+                  totalSeats = {activity.totalSeats}
+                />)}
+            </ContainerHall3>
           </BoardContainer>
         )
       }
@@ -63,16 +99,24 @@ const HallName = styled.div`
   color: #7B7B7B;
 `;
 
-const FirstEventsContainer = styled.div`
+const ContainerHall1 = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   border-left: 1px solid #7B7B7B;
   border-right: 1px solid #7B7B7B;
   border-top: 1px solid #7B7B7B;
   border-bottom: 1px solid #7B7B7B;
+  padding-top: 10px;
 `;
-const EventsContainer = styled.div`
+const ContainerHall2 = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   border-right: 1px solid #7B7B7B;
   border-top: 1px solid #7B7B7B;
   border-bottom: 1px solid #7B7B7B;
+  padding-top: 10px;
 `;
+
+const ContainerHall3 = ContainerHall2;
