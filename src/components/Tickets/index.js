@@ -28,8 +28,8 @@ export default function Tickets({ setReservedTicket }) {
       }
       if (response.data.length > 0) {
         setReservedTicket(true);
-        setMajorLoad(false);
       }
+      setMajorLoad(false);
     });
   }, []);
 
