@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import UserContext from "../../contexts/UserContext";
 import useApi from "../../hooks/useApi";
+import Load from "../shared/Load";
 
 export default function Tickets({ setReservedTicket }) {
   const [value, setValue] = useState(0);
@@ -12,19 +13,23 @@ export default function Tickets({ setReservedTicket }) {
   const [hotel, setHotel] = useState("");
   const { userData } = useContext(UserContext);
   const { ticket } = useApi();
+  const [majorLoad, setMajorLoad] = useState(true);
 
   useEffect(() => {
     setHotel("");
   }, [ingresso]);
 
   useEffect(() => {
+    setMajorLoad(true);
     ticket.getTicketInformations().then((response) => {
       if (response.status !== 200) {
+        setMajorLoad(false);
         return;
       }
       if (response.data.length > 0) {
         setReservedTicket(true);
       }
+      setMajorLoad(false);
     });
   }, []);
 
@@ -48,6 +53,7 @@ export default function Tickets({ setReservedTicket }) {
       .postTicketInformations(body)
       .then(() => {
         setReservedTicket(true);
+        toast("Seu ticket foi reservado com sucesso!");
       })
       .catch((error) => {
         if (error.response.status === 409) {
@@ -56,6 +62,10 @@ export default function Tickets({ setReservedTicket }) {
           toast("Servidor fora de área");
         }
       });
+  }
+
+  if(majorLoad) {
+    return <Load />;
   }
 
   return (
