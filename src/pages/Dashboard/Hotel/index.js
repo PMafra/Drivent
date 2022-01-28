@@ -17,7 +17,7 @@ export default function Hotel() {
     ticket.getTicketInformations().then((res) => {
       checkTicketInfo(res.data[0]);
     }).catch((err) => {
-      toast("Houve um problema ao buscar os hoteis");
+      toast("Houve um problema ao buscar as informações do ticket");
     });
   }
 
@@ -39,12 +39,16 @@ export default function Hotel() {
   function obtainHotelsInfo() {
     hotel.getHotelsInformations().then((res) => {
       setHotels(res.data);
+    }).catch((err) => {
+      toast("Houve um problema ao buscar os hoteis");
     });
   }
 
   function obtainRoomsInfo() {
     room.getRoomsInformations().then((res) => {
       setRooms(res.data.sort((a, b) => a.id - b.id));
+    }).catch((err) => {
+      toast("Houve um problema ao buscar os quartos de hoteis");
     });
   }
 
