@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { MdExitToApp } from "react-icons/md";
+import { BiXCircle } from "react-icons/bi";
 import { IconContext } from "react-icons";
 import dayjs from "dayjs";
 
@@ -18,11 +19,24 @@ export default function Activity({ id, name, startTime, endTime, totalSeats }) {
         <Time>{showStartTime} - {showEndTime}</Time>
       </InfoWrapper>
       < VacancyInfo >
-        <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
-          <DoorIcon />
-        </IconContext.Provider>
-        < AvailableSeats >
-          {totalSeats} vagas
+        {totalSeats > 0 
+          ? (
+            <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
+              <DoorIcon />
+            </IconContext.Provider>
+          )
+          : (
+            <IconContext.Provider value={{ color: "red", className: "global-class-name" }}>
+              < SoldOffIcon />
+            </IconContext.Provider>
+          )
+        }
+        < AvailableSeats available = { totalSeats > 0 ? true : false}>
+          {totalSeats > 0
+            ? (`${totalSeats} vagas`)
+            : ("Esgotado")
+          }
+          
         </AvailableSeats>
       </ VacancyInfo >
     </ Container >
@@ -77,9 +91,14 @@ const DoorIcon = styled(MdExitToApp)`
   width: 20px;
 `;
 
+const SoldOffIcon = styled(BiXCircle)`
+  height: 20px;
+  width: 20px;
+`;
+
 const AvailableSeats = styled.span`
   margin-top: 5px;
   font-size: 9px;
-  color: green;
+  color: ${ props => props.available? "green" : "red" };
   font-weight: 400;
 `;
