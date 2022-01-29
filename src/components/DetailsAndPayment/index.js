@@ -183,13 +183,13 @@ export default function DetailsAndPayment() {
                       </HorizontalDisplay>
                     </Form>
                   </CardInfoContainer>
-                  <Button 
+                  <PaymentButton 
                     form = "card-form" 
                     type = { loadingPayment ? "" : "submit" }
                     disabled = { loadingPayment }
                   >
                     { loadingPayment? "PROCESSANDO PAGAMENTO" : "FINALIZAR PAGAMENTO" }
-                  </Button>
+                  </PaymentButton>
                 </>
               )
             }
@@ -199,6 +199,12 @@ export default function DetailsAndPayment() {
     </>
   );
 }
+
+const PaymentButton = styled(Button)`
+  @media (max-width: 870px) {
+    margin-top: 190px !important;
+  }
+`;
 
 const Title = styled(Typography)`
   margin-bottom: 37px!important;
@@ -213,7 +219,12 @@ const Subtitle = styled(Typography)`
 const CardInfoContainer = styled.div`
   display: flex;
   height: 225px;
-  width: 706px;
+  max-width: 690px;
+  @media (max-width: 870px) {
+    flex-direction: column;
+    max-width: 390px;
+    gap: 10px;
+  }
 `;
 
 const CardWrapper = styled.div`
@@ -223,7 +234,7 @@ const CardWrapper = styled.div`
 `;
 
 const Form = styled.form`
-  width: 53%;
+  width: 100%;
   height:100%;
   display: flex;
   flex-direction: column;
