@@ -7,7 +7,7 @@ import useApi from "../../hooks/useApi";
 import Load from "../../components/shared/Load";
 import Activity from "./Activity";
 
-export default function ActivitiesBoard({ chosenEventDay }) {
+export default function ActivitiesBoard({ chosenEventDay, ticketInfo }) {
   const eventDayId = chosenEventDay.id;
   const { activity } = useApi();
   const [ loading, setLoading ] = useState(true);
@@ -46,33 +46,24 @@ export default function ActivitiesBoard({ chosenEventDay }) {
               {activitiesHall1.map( activity => 
                 < Activity 
                   key = {activity.id}
-                  id = {activity.id}
-                  name = {activity.name}
-                  startTime = {activity.startTime}
-                  endTime = {activity.endTime}
-                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
+                  activity = {activity}
+                  ticketInfo = {ticketInfo}
                 />)}
             </ ContainerHall1>
             < ContainerHall2 >
               {activitiesHall2.map( activity => 
                 < Activity 
                   key = {activity.id}
-                  id = {activity.id}
-                  name = {activity.name}
-                  startTime = {activity.startTime}
-                  endTime = {activity.endTime}
-                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
+                  activity = {activity}
+                  ticketInfo = {ticketInfo}
                 />)}
             </ ContainerHall2>
             < ContainerHall3 >
               {activitiesHall3.map( activity => 
                 < Activity 
                   key = {activity.id}
-                  id = {activity.id}
-                  name = {activity.name}
-                  startTime = {activity.startTime}
-                  endTime = {activity.endTime}
-                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
+                  activity = {activity}
+                  ticketInfo = {ticketInfo}
                 />)}
             </ContainerHall3>
           </BoardContainer>
