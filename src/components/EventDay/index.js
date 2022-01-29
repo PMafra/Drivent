@@ -34,7 +34,8 @@ export default function EventDays({ eventDays, chosenEventDay, setChosenEventDay
             key={eventDay.id}
           >
             <EventDayInfo>
-              {setWeekDay(eventDay.day)}, {setDateFormat(eventDay.day)}
+              <div>{setWeekDay(eventDay.day)},</div>
+              <div>{setDateFormat(eventDay.day)}</div>
             </EventDayInfo>
           </Option>
         ))}
@@ -43,7 +44,7 @@ export default function EventDays({ eventDays, chosenEventDay, setChosenEventDay
   );
 }
 
-const EventDayInfo = styled.div`
+const EventDayInfo = styled.span`
     font-size: 14px;
     line-height: 17px;
     color: #000000;
