@@ -202,7 +202,7 @@ export default function DetailsAndPayment() {
 
 const PaymentButton = styled(Button)`
   @media (max-width: 870px) {
-    margin-top: 185px !important;
+    margin-top: 190px !important;
   }
 `;
 
@@ -223,6 +223,7 @@ const CardInfoContainer = styled.div`
   @media (max-width: 870px) {
     flex-direction: column;
     max-width: 390px;
+    gap: 10px;
   }
 `;
 

@@ -34,8 +34,8 @@ export default function EventDays({ eventDays, chosenEventDay, setChosenEventDay
             key={eventDay.id}
           >
             <EventDayInfo>
-              <div>{setWeekDay(eventDay.day)},</div>
-              <div>{setDateFormat(eventDay.day)}</div>
+              <p>{setWeekDay(eventDay.day)},</p>
+              <p>{setDateFormat(eventDay.day)}</p>
             </EventDayInfo>
           </Option>
         ))}
