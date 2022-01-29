@@ -50,7 +50,7 @@ export default function ActivitiesBoard({ chosenEventDay }) {
                   name = {activity.name}
                   startTime = {activity.startTime}
                   endTime = {activity.endTime}
-                  totalSeats = {activity.totalSeats}
+                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
                 />)}
             </ ContainerHall1>
             < ContainerHall2 >
@@ -61,7 +61,7 @@ export default function ActivitiesBoard({ chosenEventDay }) {
                   name = {activity.name}
                   startTime = {activity.startTime}
                   endTime = {activity.endTime}
-                  totalSeats = {activity.totalSeats}
+                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
                 />)}
             </ ContainerHall2>
             < ContainerHall3 >
@@ -72,7 +72,7 @@ export default function ActivitiesBoard({ chosenEventDay }) {
                   name = {activity.name}
                   startTime = {activity.startTime}
                   endTime = {activity.endTime}
-                  totalSeats = {activity.totalSeats}
+                  freeSeats = {activity.totalSeats - activity.subscriptions.length}
                 />)}
             </ContainerHall3>
           </BoardContainer>

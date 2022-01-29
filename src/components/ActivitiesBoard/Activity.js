@@ -4,7 +4,7 @@ import { BiXCircle } from "react-icons/bi";
 import { IconContext } from "react-icons";
 import dayjs from "dayjs";
 
-export default function Activity({ id, name, startTime, endTime, totalSeats }) {
+export default function Activity({ id, name, startTime, endTime, freeSeats }) {
   // 2021-02-05 is just a date so dayjs can reconize the time as a date
   const formatedStartTime = "2022-01-28" + startTime;
   const formatedEndTime = "2022-01-28" + endTime;
@@ -19,7 +19,7 @@ export default function Activity({ id, name, startTime, endTime, totalSeats }) {
         <Time>{showStartTime} - {showEndTime}</Time>
       </InfoWrapper>
       < VacancyInfo >
-        {totalSeats > 0 
+        {freeSeats > 0 
           ? (
             <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
               <DoorIcon />
@@ -31,9 +31,9 @@ export default function Activity({ id, name, startTime, endTime, totalSeats }) {
             </IconContext.Provider>
           )
         }
-        < AvailableSeats available = { totalSeats > 0 ? true : false}>
-          {totalSeats > 0
-            ? (`${totalSeats} vagas`)
+        < AvailableSeats available = { freeSeats > 0 ? true : false}>
+          {freeSeats > 0
+            ? (`${freeSeats} vagas`)
             : ("Esgotado")
           }
           
