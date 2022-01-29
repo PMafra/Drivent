@@ -17,7 +17,6 @@ export default function Activity({ activity, ticketInfo }) {
   const showEndTime = dayjs(formatedEndTime).format("HH:mm");    
   const activityLength =  dayjs(formatedEndTime).diff(formatedStartTime, "hour", true);
   const [isChosen, setIsChosen] = useState(checkIfActivityIsChosen);
-  console.log(isChosen);
 
   function checkIfActivityIsChosen() {
     let chosen = false;
