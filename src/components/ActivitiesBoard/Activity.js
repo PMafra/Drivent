@@ -10,10 +10,8 @@ import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
 
 export default function Activity({ activity, ticketInfo }) {
-  // 2021-02-05 is just a date so dayjs can reconize the time as a date
   const { id, name, startTime, endTime, totalSeats, subscriptions } = activity;
   const activityApi = useApi().activity;
-  //let freeSeats = totalSeats - subscriptions.length;
   const formatedStartTime = "2022-01-28" + startTime;
   const formatedEndTime = "2022-01-28" + endTime;
   const showStartTime = dayjs(formatedStartTime).format("HH:mm");
@@ -51,6 +49,7 @@ export default function Activity({ activity, ticketInfo }) {
         if (err.response.status === 409) toast("Conflitos de horario!");
         if (err.response.status === 404) toast("Atividade não existe");
         if (err.response.status === 400) toast("Atividade sem vagas");
+        toast("Problemas com servidor");
       });
   }
   return (
