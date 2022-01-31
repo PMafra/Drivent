@@ -49,7 +49,7 @@ export default function Activity({ activity, ticketInfo }) {
         if (err.response.status === 409) toast("Conflitos de horario!");
         if (err.response.status === 404) toast("Atividade não existe");
         if (err.response.status === 400) toast("Atividade sem vagas");
-        toast("Problemas com servidor");
+        if (err.response.status === 500) toast("Problemas com servidor");
       });
   }
   return (
