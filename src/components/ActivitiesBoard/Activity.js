@@ -11,7 +11,7 @@ export default function Activity({ id, name, startTime, endTime, totalSeats }) {
   const showStartTime = dayjs(formatedStartTime).format("HH:mm"); 
   const showEndTime = dayjs(formatedEndTime).format("HH:mm");    
   const activityLength =  dayjs(formatedEndTime).diff(formatedStartTime, "hour", true);
-                                                                                  
+                                                                        
   return(
     < Container length = {activityLength === 1 ? 80 : ((activityLength * 80) + 10)}>
       <InfoWrapper>
