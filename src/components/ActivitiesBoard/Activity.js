@@ -5,74 +5,101 @@ import { BiXCircle } from "react-icons/bi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useApi from "../../hooks/useApi";
+import { toast } from "react-toastify";
 
 export default function Activity({ activity, ticketInfo }) {
   // 2021-02-05 is just a date so dayjs can reconize the time as a date
   const { id, name, startTime, endTime, totalSeats, subscriptions } = activity;
-  const freeSeats = totalSeats - subscriptions.length;
+  const activityApi = useApi().activity;
+  //let freeSeats = totalSeats - subscriptions.length;
   const formatedStartTime = "2022-01-28" + startTime;
   const formatedEndTime = "2022-01-28" + endTime;
-  const showStartTime = dayjs(formatedStartTime).format("HH:mm"); 
-  const showEndTime = dayjs(formatedEndTime).format("HH:mm");    
-  const activityLength =  dayjs(formatedEndTime).diff(formatedStartTime, "hour", true);
+  const showStartTime = dayjs(formatedStartTime).format("HH:mm");
+  const showEndTime = dayjs(formatedEndTime).format("HH:mm");
+  const activityLength = dayjs(formatedEndTime).diff(
+    formatedStartTime,
+    "hour",
+    true
+  );
+  const [freeSeats, setFreeSeats] = useState(totalSeats - subscriptions.length);
   const [isChosen, setIsChosen] = useState(checkIfActivityIsChosen);
 
   function checkIfActivityIsChosen() {
     let chosen = false;
-    subscriptions.forEach(sub => {
-      if(sub.ticketId === ticketInfo.id && sub.activityId === id) {
+    subscriptions.forEach((sub) => {
+      if (sub.ticketId === ticketInfo.id && sub.activityId === id) {
         chosen = true;
       }
     });
     return chosen;
   }
-                                                                                  
-  return(
-    < Container length = {activityLength === 1 ? 80 : ((activityLength * 80) + 10)} isChosen = {isChosen}>
+  function postActivity() {
+    const body = {
+      activityId: id,
+      ticketId: ticketInfo.id,
+    };
+    activityApi
+      .postActivity(body)
+      .then((resp) => {
+        setIsChosen(true);
+        setFreeSeats((element) => element - 1);
+      })
+      .catch((err) => {
+        if (err.response.status === 401) toast("Usuário já cadastrado!");
+        if (err.response.status === 409) toast("Conflitos de horario!");
+        if (err.response.status === 404) toast("Atividade não existe");
+        if (err.response.status === 400) toast("Atividade sem vagas");
+      });
+  }
+  return (
+    <Container
+      length={activityLength === 1 ? 80 : activityLength * 80 + 10}
+      isChosen={isChosen}
+    >
       <InfoWrapper>
         <Name>{name}</Name>
-        <Time>{showStartTime} - {showEndTime}</Time>
+        <Time>
+          {showStartTime} - {showEndTime}
+        </Time>
       </InfoWrapper>
-      < VacancyInfo isChosen = {isChosen} >
+      <VacancyInfo isChosen={isChosen} onClick={postActivity}>
         {isChosen ? (
-          <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
+          <IconContext.Provider
+            value={{ color: "green", className: "global-class-name" }}
+          >
             <ChosenIcon />
           </IconContext.Provider>
-        )
-          :
-          freeSeats > 0 
-            ? (
-              <IconContext.Provider value={{ color: "green", className: "global-class-name" }}>
-                <DoorIcon />
-              </IconContext.Provider>
-            )
-            : (
-              <IconContext.Provider value={{ color: "red", className: "global-class-name" }}>
-                < SoldOffIcon />
-              </IconContext.Provider>
-            )
-        }
-        < AvailableSeats available = { freeSeats > 0 ? true : false}>
-          {freeSeats > 0
-            ? (`${freeSeats} vagas`)
-            : ("Esgotado")
-          }
-          
+        ) : freeSeats > 0 ? (
+          <IconContext.Provider
+            value={{ color: "green", className: "global-class-name" }}
+          >
+            <DoorIcon />
+          </IconContext.Provider>
+        ) : (
+          <IconContext.Provider
+            value={{ color: "red", className: "global-class-name" }}
+          >
+            <SoldOffIcon />
+          </IconContext.Provider>
+        )}
+        <AvailableSeats available={freeSeats > 0 ? true : false}>
+          {freeSeats > 0 ? `${freeSeats} vagas` : "Esgotado"}
         </AvailableSeats>
-      </ VacancyInfo >
-    </ Container >
+      </VacancyInfo>
+    </Container>
   );
 }
 
 const Container = styled.div`
-    width: 91%;
-    height: ${ props => props.length ? `${props.length}px` : "80px"};
-    background-color: ${({ isChosen }) => isChosen ? "#D0FFDB" : "#F1F1F1"};
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  width: 91%;
+  height: ${(props) => (props.length ? `${props.length}px` : "80px")};
+  background-color: ${({ isChosen }) => (isChosen ? "#D0FFDB" : "#F1F1F1")};
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 const InfoWrapper = styled.div`
@@ -81,9 +108,9 @@ const InfoWrapper = styled.div`
   font-size: 12px;
   display: flex;
   flex-direction: column;
-  justify-content:start;
+  justify-content: start;
   padding-left: 10px;
-  border-right: 1px solid #CFCFCF;
+  border-right: 1px solid #cfcfcf;
   color: #343434;
 `;
 
@@ -102,11 +129,11 @@ const VacancyInfo = styled.button`
   height: 70%;
   display: flex;
   flex-direction: column;
-  justify-content: center ;
+  justify-content: center;
   align-items: center;
   border: none;
-  background-color: ${({ isChosen }) => isChosen ? "#D0FFDB" : "#F1F1F1"};
-  cursor: ${({ isChosen }) => isChosen ? "default" : "pointer"};
+  background-color: ${({ isChosen }) => (isChosen ? "#D0FFDB" : "#F1F1F1")};
+  cursor: ${({ isChosen }) => (isChosen ? "default" : "pointer")};
 `;
 
 const ChosenIcon = styled(AiOutlineCheckCircle)`
@@ -127,6 +154,6 @@ const SoldOffIcon = styled(BiXCircle)`
 const AvailableSeats = styled.span`
   margin-top: 5px;
   font-size: 9px;
-  color: ${ props => props.available? "green" : "red" };
+  color: ${(props) => (props.available ? "green" : "red")};
   font-weight: 400;
 `;
