@@ -13,6 +13,7 @@ export default function Activities() {
   const [authorized, setAuthorized] = useState(false);
   const [eventDays, setEventDays] = useState("");
   const [chosenEventDay, setChosenEventDay] = useState("");
+  const [ticketInfo, setTicketInfo] = useState("");
 
   function checkTicketInfo(userTicket) {
     if (!userTicket?.isPaid) {
@@ -29,6 +30,7 @@ export default function Activities() {
   function obtainPaymentInfo() {
     ticket.getTicketInformations().then((res) => {
       checkTicketInfo(res.data[0]);
+      setTicketInfo(res.data[0]);
     }).catch((err) => {
       toast("Houve um problema ao buscar as informações do ticket");
     });
@@ -64,7 +66,7 @@ export default function Activities() {
         chosenEventDay = { chosenEventDay }
         setChosenEventDay={ setChosenEventDay }
       />
-      {chosenEventDay && < ActivitiesBoard chosenEventDay={chosenEventDay}/>}
+      {chosenEventDay && < ActivitiesBoard chosenEventDay={chosenEventDay} ticketInfo={ticketInfo}/>}
     </>
   );
 }
