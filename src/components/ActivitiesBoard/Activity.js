@@ -66,7 +66,9 @@ export default function Activity({ activity, ticketInfo }) {
           {showStartTime} - {showEndTime}
         </Time>
       </InfoWrapper>
-      <VacancyInfo isChosen={isChosen} onClick={() => setOpen(true)}>
+      <VacancyInfo 
+        isChosen={isChosen} 
+        onClick={() => !isChosen && freeSeats > 0 ? setOpen(true) : postActivity()}>
         {isChosen ? (
           <IconContext.Provider
             value={{ color: "green", className: "global-class-name" }}
