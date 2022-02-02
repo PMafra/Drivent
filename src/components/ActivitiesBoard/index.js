@@ -14,12 +14,23 @@ export default function ActivitiesBoard({ chosenEventDay, ticketInfo }) {
   const [ activitiesHall1, setActivitiesHall1 ] = useState("");
   const [ activitiesHall2, setActivitiesHall2 ] = useState("");
   const [ activitiesHall3, setActivitiesHall3 ] = useState("");
+
+  function sortArrayByStartTime(arr) {
+    arr.sort(function compare(a, b) {
+      if (a.startTime < b.startTime) return -1;
+      if (a.startTime > b.startTime) return 1;
+      return 0;
+    });
+  }
   
   useEffect(() => {
     activity.getEventDayActivities(eventDayId).then( (res) => {
       const hall1 = res.data.filter( activity => activity.hall.id === 1);
       const hall2 = res.data.filter( activity => activity.hall.id === 2);
       const hall3 = res.data.filter( activity => activity.hall.id === 3);
+      sortArrayByStartTime(hall1);
+      sortArrayByStartTime(hall2);
+      sortArrayByStartTime(hall3);
       setActivitiesHall1(hall1);
       setActivitiesHall2(hall2);
       setActivitiesHall3(hall3);
