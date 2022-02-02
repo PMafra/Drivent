@@ -5,9 +5,10 @@ import { BiXCircle } from "react-icons/bi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
+import ConfimationBox from "../shared/ConfirmationBox";
 
 export default function Activity({ activity, ticketInfo }) {
   const { id, name, startTime, endTime, totalSeats, subscriptions } = activity;
@@ -23,6 +24,7 @@ export default function Activity({ activity, ticketInfo }) {
   );
   const [freeSeats, setFreeSeats] = useState(totalSeats - subscriptions.length);
   const [isChosen, setIsChosen] = useState(checkIfActivityIsChosen);
+  const [open, setOpen] = useState(false);
 
   function checkIfActivityIsChosen() {
     let chosen = false;
@@ -34,6 +36,7 @@ export default function Activity({ activity, ticketInfo }) {
     return chosen;
   }
   function postActivity() {
+    setOpen(false);
     const body = {
       activityId: id,
       ticketId: ticketInfo.id,
@@ -63,7 +66,9 @@ export default function Activity({ activity, ticketInfo }) {
           {showStartTime} - {showEndTime}
         </Time>
       </InfoWrapper>
-      <VacancyInfo isChosen={isChosen} onClick={postActivity}>
+      <VacancyInfo 
+        isChosen={isChosen} 
+        onClick={() => !isChosen && freeSeats > 0 ? setOpen(true) : postActivity()}>
         {isChosen ? (
           <IconContext.Provider
             value={{ color: "green", className: "global-class-name" }}
@@ -87,6 +92,13 @@ export default function Activity({ activity, ticketInfo }) {
           {freeSeats > 0 ? `${freeSeats} vagas` : "Esgotado"}
         </AvailableSeats>
       </VacancyInfo>
+      <ConfimationBox 
+        open={open} 
+        setOpen={setOpen} 
+        title="Tem certeza que deseja se inscrever para essa atividade?" 
+        message="Uma vez inscrito, essa ação não poderá ser desfeita." 
+        toTrigger={postActivity}
+      />
     </Container>
   );
 }
