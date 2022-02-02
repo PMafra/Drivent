@@ -5,15 +5,10 @@ import { BiXCircle } from "react-icons/bi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
+import ConfimationBox from "../shared/ConfirmationBox";
 
 export default function Activity({ activity, ticketInfo }) {
   const { id, name, startTime, endTime, totalSeats, subscriptions } = activity;
@@ -95,27 +90,13 @@ export default function Activity({ activity, ticketInfo }) {
           {freeSeats > 0 ? `${freeSeats} vagas` : "Esgotado"}
         </AvailableSeats>
       </VacancyInfo>
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Tem certeza que deseja se inscrever para essa atividade?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Uma vez inscrito, essa ação não poderá ser desfeita.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Não</Button>
-          <Button onClick={() => postActivity()} autoFocus>
-            Sim
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfimationBox 
+        open={open} 
+        setOpen={setOpen} 
+        title="Tem certeza que deseja se inscrever para essa atividade?" 
+        message="Uma vez inscrito, essa ação não poderá ser desfeita." 
+        toTrigger={postActivity}
+      />
     </Container>
   );
 }
