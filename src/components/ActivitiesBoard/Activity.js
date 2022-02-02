@@ -8,6 +8,12 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 
 export default function Activity({ activity, ticketInfo }) {
   const { id, name, startTime, endTime, totalSeats, subscriptions } = activity;
@@ -23,6 +29,7 @@ export default function Activity({ activity, ticketInfo }) {
   );
   const [freeSeats, setFreeSeats] = useState(totalSeats - subscriptions.length);
   const [isChosen, setIsChosen] = useState(checkIfActivityIsChosen);
+  const [open, setOpen] = useState(false);
 
   function checkIfActivityIsChosen() {
     let chosen = false;
@@ -34,6 +41,7 @@ export default function Activity({ activity, ticketInfo }) {
     return chosen;
   }
   function postActivity() {
+    setOpen(false);
     const body = {
       activityId: id,
       ticketId: ticketInfo.id,
@@ -63,7 +71,7 @@ export default function Activity({ activity, ticketInfo }) {
           {showStartTime} - {showEndTime}
         </Time>
       </InfoWrapper>
-      <VacancyInfo isChosen={isChosen} onClick={postActivity}>
+      <VacancyInfo isChosen={isChosen} onClick={() => setOpen(true)}>
         {isChosen ? (
           <IconContext.Provider
             value={{ color: "green", className: "global-class-name" }}
@@ -87,6 +95,27 @@ export default function Activity({ activity, ticketInfo }) {
           {freeSeats > 0 ? `${freeSeats} vagas` : "Esgotado"}
         </AvailableSeats>
       </VacancyInfo>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Tem certeza que deseja se inscrever para essa atividade?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Uma vez inscrito, essa ação não poderá ser desfeita.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Não</Button>
+          <Button onClick={() => postActivity()} autoFocus>
+            Sim
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
