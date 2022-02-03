@@ -1,10 +1,22 @@
+import Typography from "@material-ui/core/Typography";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
-import jsPDF from "jspdf";
 import * as htmlToImage from "html-to-image";
-import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+import useApi from "../../../hooks/useApi";
+
+import UserCertificate from "../../../components/Certificate";
+import Unauthorized from "../../../components/shared/Unauthorized";
 
 export default function Certificate() {
+  const { enrollment, ticket } = useApi();
+  const [userInfo, setUserInfo] = useState("");
+  const [ticketInfo, setTicketInfo] = useState("");
+  const [authorized, setAuthorized] = useState(false);
+
   function downloadPdf() {
     htmlToImage.toPng(document.getElementById("pdf"))
       .then(dataUrl => {
@@ -21,24 +33,53 @@ export default function Certificate() {
         doc.save("Certificado.pdf"); 
       });
   }
+ 
+  useEffect(() => {
+    ticket.getTicketInformations().then((res) => {
+      setTicketInfo(res.data[0]);
+    }).catch((err) => {
+      toast("Houve um problema ao buscar as informações do ticket");
+    });
+
+    enrollment.getPersonalInformations().then((res) => {
+      setUserInfo(res.data);
+    }).catch((err) => {
+      toast("Houve um problema ao buscar as informações do usuário");
+    });
+  }, []);
+
+  useEffect(() => {
+    if (userInfo && ticketInfo && ticketInfo.isPaid) {
+      setAuthorized(true);
+    }
+  }, [userInfo, ticketInfo]);
+
   return (
-    <Wrapper>
-      <Pdf id="pdf">
-        
-        CERTIFICADO AQUI
-      </Pdf>
-      <DownloadPdfButton onClick={downloadPdf}>DOWNLOAD DO CERFITICADO</DownloadPdfButton>
-    </Wrapper>
+    <>
+      { authorized
+        ? 
+        <Wrapper>
+          <Title variant="h4">Seu certificado</Title>
+          < UserCertificate 
+            userInfo = {userInfo}
+            ticketInfo = {ticketInfo}
+          />
+          <DownloadPdfButton onClick={downloadPdf}>DOWNLOAD DO CERFITICADO</DownloadPdfButton>
+        </Wrapper>
+        : 
+        < Unauthorized  message = "Certificado não disponível"/>
+      }
+     
+    </>
   );
 }
 
+const Title = styled(Typography)`
+  margin-bottom: 37px!important;
+`;
+
 const Wrapper = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   height: 100%;
-  gap: 15px;
 `;
 
 const DownloadPdfButton = styled(Button)`
@@ -47,15 +88,4 @@ const DownloadPdfButton = styled(Button)`
   border: 1px solid #CECECE !important;
   font-weight: 700 !important;
   border-radius: 10px !important;
-`;
-
-const Pdf = styled.div`
-  background-color: pink;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 4em;
 `;
