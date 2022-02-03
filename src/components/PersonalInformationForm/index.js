@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import CustomParseFormat from "dayjs/plugin/customParseFormat";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MenuItem from "@material-ui/core/MenuItem";
+import Load from "../../components/shared/Load";
 
 import useApi from "../../hooks/useApi";
 import { useForm } from "../../hooks/useForm";
@@ -26,6 +27,7 @@ dayjs.extend(CustomParseFormat);
 export default function PersonalInformationForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { enrollment, cep } = useApi();
+  const [majorLoad, setMajorLoad] = useState(true);
 
   const {
     handleSubmit,
@@ -87,6 +89,7 @@ export default function PersonalInformationForm() {
   useEffect(() => {
     enrollment.getPersonalInformations().then(response => {
       if (response.status !== 200) {
+        setMajorLoad(false);
         return;
       }
       
@@ -105,6 +108,7 @@ export default function PersonalInformationForm() {
         neighborhood: address.neighborhood,
         addressDetail: address.addressDetail,
       });
+      setMajorLoad(false);
     });
   }, []);
 
@@ -136,6 +140,10 @@ export default function PersonalInformationForm() {
       });
     }
   };
+
+  if(majorLoad) {
+    return <Load />;
+  }
 
   return (
     <>

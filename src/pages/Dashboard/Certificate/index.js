@@ -7,24 +7,28 @@ import useApi from "../../../hooks/useApi";
 
 import UserCertificate from "../../../components/Certificate";
 import Unauthorized from "../../../components/shared/Unauthorized";
+import Load from "../../../components/shared/Load";
 
 export default function Certificate() {
   const { enrollment, ticket } = useApi();
   const [userInfo, setUserInfo] = useState("");
   const [ticketInfo, setTicketInfo] = useState("");
   const [authorized, setAuthorized] = useState(false);
+  const [majorLoad, setMajorLoad] = useState(true);
  
   useEffect(() => {
     ticket.getTicketInformations().then((res) => {
       setTicketInfo(res.data[0]);
+      enrollment.getPersonalInformations().then((res) => {
+        setUserInfo(res.data);
+        setMajorLoad(false);
+      }).catch((err) => {
+        setMajorLoad(false);
+        toast("Houve um problema ao buscar as informações do usuário");
+      });
     }).catch((err) => {
+      setMajorLoad(false);
       toast("Houve um problema ao buscar as informações do ticket");
-    });
-
-    enrollment.getPersonalInformations().then((res) => {
-      setUserInfo(res.data);
-    }).catch((err) => {
-      toast("Houve um problema ao buscar as informações do usuário");
     });
   }, []);
 
@@ -33,6 +37,10 @@ export default function Certificate() {
       setAuthorized(true);
     }
   }, [userInfo, ticketInfo]);
+
+  if(majorLoad) {
+    return <Load />;
+  }
 
   return (
     <>
